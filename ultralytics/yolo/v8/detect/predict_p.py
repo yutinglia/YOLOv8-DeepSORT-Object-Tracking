@@ -191,7 +191,8 @@ class DetectionPredictor(BasePredictor):
                                         self.args.conf,
                                         self.args.iou,
                                         agnostic=self.args.agnostic_nms,
-                                        max_det=self.args.max_det)
+                                        max_det=self.args.max_det,
+                                        classes=[0, ], )
 
         for i, pred in enumerate(preds):
             shape = orig_img[i].shape if self.webcam else orig_img.shape
@@ -255,6 +256,7 @@ class DetectionPredictor(BasePredictor):
 @hydra.main(version_base=None, config_path=str(DEFAULT_CONFIG.parent), config_name=DEFAULT_CONFIG.name)
 def predict(cfg):
     init_tracker()
+    cfg.conf = .7
     cfg.model = cfg.model or "yolov8n.pt"
     cfg.imgsz = check_imgsz(cfg.imgsz, min_dim=2)  # check image size
     cfg.source = cfg.source if cfg.source is not None else ROOT / "assets"
